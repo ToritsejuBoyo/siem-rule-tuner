@@ -57,7 +57,7 @@ def sanitize_text(text: str) -> str:
         h = hashlib.sha256(addr.encode()).hexdigest()[:6]
         return f"user-{h}@corp.example.internal"
 
-    email_pattern = r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+"
+    email_pattern = r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9_.-]+"
     text = re.sub(email_pattern, _replace_email, text)
 
     # Mask IPv4 addresses
@@ -72,7 +72,7 @@ def sanitize_text(text: str) -> str:
         h = hashlib.sha256(fqdn.encode()).hexdigest()[:6]
         return f"host-{h}.corp.example.internal"
 
-    fqdn_pattern = r"(?<!@)\b[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*\.(?:corp|local|internal|lan)\b"
+    fqdn_pattern = r"(?<!@)\b[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)*\.(?:corp|local|internal|lan)\b"
     text = re.sub(fqdn_pattern, _replace_fqdn, text)
 
     return text
@@ -85,10 +85,17 @@ def sanitize_bundle(data: Any, max_depth: int = 100) -> Any:
     if isinstance(data, dict):
         sanitized = {}
         for k, v in data.items():
-            if k in ("agent_name", "computer_name", "DeviceName", "HostName"):
-                sanitized[k] = hash_identifier(str(v), "HOST") if v else v
-            elif k in ("user", "AccountName", "AccountUpn", "UserName"):
-                sanitized[k] = hash_identifier(str(v), "USER") if v else v
+            k_low = k.lower()
+            if k_low in ("agent_name", "computer_name", "devicename", "hostname", "hosts", "hostnames"):
+                if isinstance(v, list):
+                    sanitized[k] = [hash_identifier(str(item), "HOST") for item in v]
+                else:
+                    sanitized[k] = hash_identifier(str(v), "HOST") if v else v
+            elif k_low in ("user", "accountname", "accountupn", "username", "users", "accounts"):
+                if isinstance(v, list):
+                    sanitized[k] = [hash_identifier(str(item), "USER") for item in v]
+                else:
+                    sanitized[k] = hash_identifier(str(v), "USER") if v else v
             else:
                 sanitized[k] = sanitize_bundle(v, max_depth - 1)
         return sanitized
@@ -100,7 +107,7 @@ def sanitize_bundle(data: Any, max_depth: int = 100) -> Any:
         return data
 
 
-def extract_alert_attributes(alert: Dict[str, Any], fmt: str) -> Dict[str, str]:
+def extract_alert_attributes(alert: Any, fmt: str) -> Dict[str, str]:
     """Extract standard telemetry attributes from various SIEM alert formats."""
     img = "Unknown"
     pimg = "Unknown"
@@ -109,14 +116,34 @@ def extract_alert_attributes(alert: Dict[str, Any], fmt: str) -> Dict[str, str]:
     rule_id = "Unknown"
     rule_desc = "Unknown"
 
-    if fmt == "wazuh" or "rule" in alert:
-        rule_info = alert.get("rule", {})
-        rule_id = str(rule_info.get("id") or alert.get("rule_id", "Unknown"))
-        rule_desc = rule_info.get("description", alert.get("rule_description", "Unknown"))
+    if not isinstance(alert, dict):
+        return {
+            "rule_id": "Unknown",
+            "rule_description": "Unknown",
+            "image": "Unknown",
+            "parent_image": "Unknown",
+            "user": "Unknown",
+            "command_line": ""
+        }
 
-        eventdata = alert.get("data", {}).get("win", {}).get("eventdata", {})
-        if not eventdata:
-            eventdata = alert.get("data", {}).get("eventdata", {})
+    if fmt == "wazuh" or "rule" in alert:
+        rule_info = alert.get("rule")
+        if not isinstance(rule_info, dict):
+            rule_info = {}
+        rule_id = str(rule_info.get("id") or alert.get("rule_id", "Unknown"))
+        rule_desc = str(rule_info.get("description") or alert.get("rule_description", "Unknown"))
+
+        data_obj = alert.get("data")
+        if not isinstance(data_obj, dict):
+            data_obj = {}
+        win_obj = data_obj.get("win")
+        if not isinstance(win_obj, dict):
+            win_obj = {}
+        eventdata = win_obj.get("eventdata")
+        if not isinstance(eventdata, dict):
+            eventdata = data_obj.get("eventdata")
+            if not isinstance(eventdata, dict):
+                eventdata = {}
 
         img = (
             eventdata.get("image") or alert.get("image") or alert.get("process")
@@ -149,11 +176,11 @@ def extract_alert_attributes(alert: Dict[str, Any], fmt: str) -> Dict[str, str]:
 
     return {
         "rule_id": str(rule_id),
-        "rule_description": rule_desc,
-        "image": img,
-        "parent_image": pimg,
-        "user": user,
-        "command_line": cmd
+        "rule_description": str(rule_desc),
+        "image": str(img) if img is not None else "Unknown",
+        "parent_image": str(pimg) if pimg is not None else "Unknown",
+        "user": str(user) if user is not None else "Unknown",
+        "command_line": str(cmd) if cmd is not None else ""
     }
 
 
@@ -208,8 +235,8 @@ def analyze_fp_alerts(alerts_data: Any, fmt: str = "wazuh") -> Dict[str, Any]:
         "top_rules": rules.most_common(5),
         "top_command_snippets": command_snippets.most_common(5),
         "recommendation": (
-            f"Rule {top_rule} generates {total} alerts predominantly from '{os.path.basename(top_image)}' "
-            f"spawned by '{os.path.basename(top_parent)}'. Recommend multi-attribute child exclusion."
+            f"Rule {top_rule} generates {total} alerts predominantly from '{os.path.basename(str(top_image))}' "
+            f"spawned by '{os.path.basename(str(top_parent))}'. Recommend multi-attribute child exclusion."
             if total > 0 else "No alerts analyzed."
         )
     }

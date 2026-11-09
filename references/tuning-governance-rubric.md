@@ -35,3 +35,4 @@ Every proposed false-positive tuning change must satisfy all four gates:
   - Estimated weekly noise reduction percentage.
   - Justification linking to legitimate vendor documentation.
   - Review and sign-off by a Senior Detection Engineer or SOC Tier 3 Lead.
+

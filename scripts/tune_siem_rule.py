@@ -247,6 +247,14 @@ def tune_alerts_data(
 
     clustering = analyze_fp_alerts(data, platform)
     total_alerts = clustering.get("total_alerts_analyzed", 0)
+    if total_alerts == 0:
+        return {
+            "tuning_disposition": "REJECTED",
+            "approved": False,
+            "blind_spot_defects": ["No valid telemetry alerts found in payload."],
+            "production_rule_code": "",
+            "platform": platform
+        }
 
     # Extract primary indicators
     primary_rule = clustering.get("primary_noisy_rule_id", "60103")

@@ -37,3 +37,4 @@ Excluding any binary in this table requires **at least three distinct telemetry 
 4. **Disabling Parent Rule IDs:**
    - Prohibited: Removing rule `60103` from `local_rules.xml`.
    - Danger: Eliminates visibility for all subsequent attacks matching that technique.
+
