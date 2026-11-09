@@ -1,0 +1,24 @@
+[
+  {
+    "timestamp": "2026-11-09T05:00:00Z",
+    "rule": {
+      "level": 12,
+      "description": "Mimikatz credential dumper execution detected",
+      "id": "60200"
+    },
+    "agent": {
+      "id": "005",
+      "name": "fileserver01.corp.example.internal"
+    },
+    "data": {
+      "win": {
+        "eventdata": {
+          "image": "C:\\Users\\Public\\mimikatz.exe",
+          "parentImage": "C:\\Windows\\System32\\cmd.exe",
+          "user": "compromised_user",
+          "commandLine": "mimikatz.exe \"privilege::debug\" \"sekurlsa::logonpasswords\" exit"
+        }
+      }
+    }
+  }
+]

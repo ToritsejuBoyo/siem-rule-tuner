@@ -1,0 +1,18 @@
+[
+  {
+    "Timestamp": "2026-11-09T09:30:15Z",
+    "DeviceName": "win11-client042.corp.example.internal",
+    "ActionType": "ProcessCreated",
+    "FileName": "powershell.exe",
+    "FolderPath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "SHA256": "0000000000000000000000000000000000000000000000000000000000000001",
+    "ProcessCommandLine": "powershell.exe -executionpolicy bypass -file \"C:\\Program Files (x86)\\Microsoft Intune Management Extension\\Content\\Detection\\detect.ps1\"",
+    "AccountName": "SYSTEM",
+    "AccountDomain": "NT AUTHORITY",
+    "InitiatingProcessFileName": "AgentExecutor.exe",
+    "InitiatingProcessFolderPath": "C:\\Program Files (x86)\\Microsoft Intune Management Extension\\AgentExecutor.exe",
+    "InitiatingProcessCommandLine": "\"C:\\Program Files (x86)\\Microsoft Intune Management Extension\\AgentExecutor.exe\" -powershell",
+    "AlertTitle": "Suspicious PowerShell Command Line Execution",
+    "AlertId": "Def-Alert-77041"
+  }
+]

@@ -1,0 +1,25 @@
+[
+  {
+    "timestamp": "2026-11-09T07:44:11.230Z",
+    "rule": {
+      "level": 6,
+      "description": "Windows service execution detected",
+      "id": "60100"
+    },
+    "agent": {
+      "id": "022",
+      "name": "ws-eng-laptop09.corp.example.internal",
+      "ip": "192.0.2.88"
+    },
+    "data": {
+      "win": {
+        "eventdata": {
+          "image": "C:\\Program Files (x86)\\NinjaRMM\\NinjaRMMAgent.exe",
+          "parentImage": "C:\\Windows\\System32\\services.exe",
+          "user": "NT AUTHORITY\\SYSTEM",
+          "commandLine": "\"C:\\Program Files (x86)\\NinjaRMM\\NinjaRMMAgent.exe\" -service -monitors"
+        }
+      }
+    }
+  }
+]

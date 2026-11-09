@@ -1,0 +1,63 @@
+[
+  {
+    "timestamp": "2026-11-09T08:14:22.102Z",
+    "rule": {
+      "level": 7,
+      "description": "Sysmon - Event 1: Process creation in system directory",
+      "id": "60103",
+      "groups": ["windows", "sysmon", "sysmon_process-creation"]
+    },
+    "agent": {
+      "id": "014",
+      "name": "srv-prod-bkp01.corp.example.internal",
+      "ip": "192.0.2.14"
+    },
+    "data": {
+      "win": {
+        "eventdata": {
+          "utcTime": "2026-11-09 08:14:21.992",
+          "processGuid": "{00000000-0000-4000-a000-000000000001}",
+          "processId": "4820",
+          "image": "C:\\Program Files\\Veeam\\Backup\\VeeamGuestHelper.exe",
+          "fileVersion": "12.1.2.172",
+          "description": "Veeam Guest Agent Helper",
+          "product": "Veeam Backup & Replication",
+          "company": "Veeam Software Group GmbH",
+          "originalFileName": "VeeamGuestHelper.exe",
+          "commandLine": "\"C:\\Program Files\\Veeam\\Backup\\VeeamGuestHelper.exe\" -runAsService -session 104",
+          "currentDirectory": "C:\\Windows\\system32\\",
+          "user": "NT AUTHORITY\\SYSTEM",
+          "parentProcessGuid": "{00000000-0000-4000-a000-000000000002}",
+          "parentProcessId": "688",
+          "parentImage": "C:\\Windows\\System32\\services.exe",
+          "parentCommandLine": "C:\\Windows\\system32\\services.exe"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-11-09T08:19:22.105Z",
+    "rule": {
+      "level": 7,
+      "description": "Sysmon - Event 1: Process creation in system directory",
+      "id": "60103",
+      "groups": ["windows", "sysmon", "sysmon_process-creation"]
+    },
+    "agent": {
+      "id": "014",
+      "name": "srv-prod-bkp01.corp.example.internal",
+      "ip": "192.0.2.14"
+    },
+    "data": {
+      "win": {
+        "eventdata": {
+          "utcTime": "2026-11-09 08:19:21.841",
+          "image": "C:\\Program Files\\Veeam\\Backup\\VeeamGuestHelper.exe",
+          "commandLine": "\"C:\\Program Files\\Veeam\\Backup\\VeeamGuestHelper.exe\" -runAsService -session 105",
+          "user": "NT AUTHORITY\\SYSTEM",
+          "parentImage": "C:\\Windows\\System32\\services.exe"
+        }
+      }
+    }
+  }
+]
